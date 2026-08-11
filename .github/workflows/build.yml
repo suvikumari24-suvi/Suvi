@@ -10,6 +10,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Unzip project
         run: unzip -o SUVI_Phase1.zip
+      - name: Fix manifest icon reference
+        run: sed -i '/android:icon/d' SUVI/app/src/main/AndroidManifest.xml
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
