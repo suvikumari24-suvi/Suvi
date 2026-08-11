@@ -1,0 +1,31 @@
+name: Build SUVI APK
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip project
+        run: unzip -o SUVI_Phase1.zip
+      - name: Fix manifest icon reference
+        run: sed -i '/android:icon/d' SUVI/app/src/main/AndroidManifest.xml
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.7
+      - name: Build debug APK
+        working-directory: SUVI
+        run: gradle assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: SUVI-debug-apk
+          path: SUVI/app/build/outputs/apk/debug/app-debug.apk
